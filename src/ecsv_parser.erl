@@ -112,7 +112,7 @@ do_ready(
         {char, Char} when (Char == $") ->
             % pass an empty string to in_quotes as we do not want the
             % preceeding characters to be included, only those in quotes
-            PState#pstate{state=in_quotes, current_value=[]};
+            PState#pstate{state=in_quotes, current_value=[Char | CurrentValue]};
         {char, Char} when Char == Delimiter ->
             PState#pstate{
                 current_line=[lists:reverse(CurrentValue) | CurrentLine],
@@ -165,9 +165,8 @@ do_in_quotes(
                     PState#pstate{current_value=[Char | V]};
                 _ ->
                     PState#pstate{
-                      state=skip_to_delimiter,
-                      current_line=[lists:reverse(CurrentValue) | CurrentLine],
-                      current_value=[]
+                      state=ready,
+                      current_value=[Char | CurrentValue]
                      }
             end;
         {char, Char} ->
